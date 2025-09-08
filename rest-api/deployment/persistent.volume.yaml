@@ -8,7 +8,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: /run/desktop/mnt/host/c/Users/indra/k8s-data/postgres
+    path: /mnt/data/postgres-ecom
     type: DirectoryOrCreate
   persistentVolumeReclaimPolicy: Retain
   storageClassName: manual
