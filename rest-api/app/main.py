@@ -1,13 +1,16 @@
-from fastapi import FastAPI, UploadFile, File, Query, Depends, Body, HTTPException
+from fastapi import (APIRouter, Body, Depends, FastAPI, File, HTTPException,
+                     Query, UploadFile)
 from fastapi.responses import JSONResponse
-from .schemas import PredictResponse, AnalyzeRequest, AnalyzeResponse, OrdersResponse
-from .workloads import cpu as cpu_work, memory as mem_work, io as io_work
-from .middleware import MetricsMiddleware, metrics_endpoint
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from .config import settings
 from .db import get_session
-from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import APIRouter, File, UploadFile, HTTPException, Query
-
+from .middleware import MetricsMiddleware, metrics_endpoint
+from .schemas import (AnalyzeRequest, AnalyzeResponse, OrdersResponse,
+                      PredictResponse)
+from .workloads import cpu as cpu_work
+from .workloads import io as io_work
+from .workloads import memory as mem_work
 
 app = FastAPI(title=settings.APP_NAME)
 app.add_middleware(MetricsMiddleware)
@@ -52,8 +55,7 @@ async def analyze(
 async def orders(
     limit: int = Query(50, ge=1, le=200),
     offset: int = Query(0, ge=0),
-    extra_latency_ms: int = Query(settings.IO_DEFAULT_LAT_MS, ge=0, le=2000),
     session: AsyncSession = Depends(get_session),
 ):
-    res = await io_work.get_orders(session, limit, offset, extra_latency_ms)
+    res = await io_work.get_orders(session, limit, offset)
     return OrdersResponse(**res)

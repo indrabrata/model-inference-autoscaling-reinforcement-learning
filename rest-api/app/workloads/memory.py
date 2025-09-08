@@ -1,7 +1,9 @@
 import time
 from collections import defaultdict
-from typing import List, Dict, Any
+from typing import Any, Dict, List
+
 from ..schemas import TransactionItem
+
 
 def analyze(trans: List[TransactionItem], expand_factor: int = 1, heavy_agg: bool = False):
     t0 = time.perf_counter()
