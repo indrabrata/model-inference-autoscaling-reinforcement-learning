@@ -51,8 +51,14 @@ apiVersion: v1
 kind: Service
 metadata:
   name: ecom-api
+  namespace: default
   labels:
     app: ecom-api
+    service: ecom-api
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "80"
+    prometheus.io/path: "/metrics"
 spec:
   selector:
     app: ecom-api
@@ -60,3 +66,5 @@ spec:
     - name: http
       port: 80
       targetPort: 8000
+      protocol: TCP
+  type: ClusterIP
