@@ -7,7 +7,6 @@ import torchvision.transforms as T
 from PIL import Image
 from torchvision.models import ResNet18_Weights, resnet18
 
-# Load pretrained ResNet18 once at startup
 weights = ResNet18_Weights.DEFAULT
 model = resnet18(weights=weights)
 model.eval()

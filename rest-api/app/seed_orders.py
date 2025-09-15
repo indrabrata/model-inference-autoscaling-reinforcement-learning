@@ -13,7 +13,6 @@ async def init_db():
 
 async def seed_orders(n: int = 5000):
     async with AsyncSessionLocal() as session:
-        # quick check
         count = (await session.execute(text("SELECT COUNT(*) FROM orders"))).scalar() or 0
         if count >= n:
             return

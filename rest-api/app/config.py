@@ -8,7 +8,6 @@ import os
 class Settings:
     APP_NAME: str = "E-Commerce RL Simulator"
     ENV: str = os.getenv("ENV", "dev")
-    # DB
     DB_HOST: str = os.getenv("DB_HOST", "localhost")
     DB_PORT: str = os.getenv("DB_PORT", "5432")
     DB_USER: str = os.getenv("DB_USER", "ecom")
@@ -17,7 +16,6 @@ class Settings:
 
     @property
     def DATABASE_URL(self) -> str:
-        # asyncpg DSN
         return (
             f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASS}@"
             f"{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"

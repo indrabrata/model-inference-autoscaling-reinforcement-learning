@@ -3,32 +3,64 @@ import http from "k6/http";
 
 export let options = {
   scenarios: {
-    // ---------- CPU-bound: Predict with spike ----------
+    // ---------- CPU-bound: Predict with spikes ----------
     predict_load: {
       executor: "ramping-arrival-rate",
-      startRate: 10, // start higher
+      startRate: 20,
       timeUnit: "1s",
-      preAllocatedVUs: 50,
-      maxVUs: 200,
+      preAllocatedVUs: 100,
+      maxVUs: 500,
       stages: [
-        { target: 50, duration: "30s" }, // ramp up fast
-        { target: 800, duration: "15s" }, // sudden spike
-        { target: 250, duration: "45s" }, // drop down
-        { target: 100, duration: "30s" }, // cool off
+        { target: 100, duration: "2m" },
+        { target: 500, duration: "1m" }, // spike
+        { target: 300, duration: "3m" },
+        { target: 50, duration: "2m" },
+        { target: 800, duration: "1m" }, // another spike
+        { target: 200, duration: "2m" },
       ],
       exec: "predictLoad",
     },
 
-    // ---------- I/O + Memory-bound: Analyze + Orders ----------
+    // ---------- I/O + Memory-bound ----------
     analyze_and_orders: {
       executor: "ramping-vus",
-      startVUs: 20,
+      startVUs: 10,
       stages: [
-        { duration: "30s", target: 100 }, // ramp up concurrency
-        { duration: "1m", target: 300 }, // sustain heavy load
-        { duration: "30s", target: 150 }, // ramp down
+        { duration: "2m", target: 100 },
+        { duration: "3m", target: 300 },
+        { duration: "2m", target: 150 },
+        { duration: "2m", target: 400 },
+        { duration: "2m", target: 50 },
       ],
       exec: "hitTwoEndpoints",
+    },
+
+    // ---------- Background noise ----------
+    background_noise: {
+      executor: "constant-arrival-rate",
+      rate: 20,
+      timeUnit: "1s",
+      duration: "15m",
+      preAllocatedVUs: 20,
+      maxVUs: 100,
+      exec: "ordersRequest",
+    },
+
+    // ---------- NEW: CPU + Memory Mix ----------
+    cpu_and_memory_mix: {
+      executor: "ramping-arrival-rate",
+      startRate: 30,
+      timeUnit: "1s",
+      preAllocatedVUs: 100,
+      maxVUs: 400,
+      stages: [
+        { target: 150, duration: "2m" }, // ramp up
+        { target: 400, duration: "2m" }, // sustained heavy load
+        { target: 200, duration: "3m" }, // partial cooldown
+        { target: 600, duration: "1m" }, // sudden spike
+        { target: 100, duration: "2m" }, // cooldown
+      ],
+      exec: "cpuMemoryMix",
     },
   },
 };
@@ -51,7 +83,8 @@ export function predictLoad() {
     "status is 200": (r) => r.status === 200,
     "has predictions": (r) => r.json("result") !== undefined,
   });
-  sleep(1);
+
+  sleep(Math.random() * 2);
 }
 
 // ---------- ANALYZE (JSON body from file) ----------
@@ -71,12 +104,13 @@ function analyzeRequest() {
 }
 
 // ---------- ORDERS (DB-bound) ----------
-function ordersRequest() {
+export function ordersRequest() {
   let res = http.get(`${BASE_URL}/orders?limit=20&offset=0`);
   check(res, { "status is 200": (r) => r.status === 200 });
+  sleep(Math.random());
 }
 
-// ---------- HIT TWO ENDPOINTS AT SAME TIME ----------
+// ---------- HIT TWO ENDPOINTS ----------
 export function hitTwoEndpoints() {
   let payload = JSON.stringify(transactionsData);
 
@@ -87,10 +121,19 @@ export function hitTwoEndpoints() {
       payload,
       { headers: { "Content-Type": "application/json" } },
     ],
-    ["GET", `${BASE_URL}/orders?limit=10&offset=0`],
+    ["GET", `${BASE_URL}/orders?limit=500&offset=0`],
   ]);
 
   check(responses[0], { "analyze ok": (r) => r.status === 200 });
   check(responses[1], { "orders ok": (r) => r.status === 200 });
-  sleep(1);
+  sleep(Math.random() * 2);
+}
+
+// ---------- CPU + Memory Mix ----------
+export function cpuMemoryMix() {
+  if (Math.random() < 0.5) {
+    predictLoad();
+  } else {
+    analyzeRequest();
+  }
 }
