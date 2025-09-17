@@ -2,11 +2,11 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: ecom-api-metrics
-  namespace: monitoring
+  namespace: default
   labels:
     app: kube-prometheus-stack
-    release: kube-prometheus-stack
-    service: ecom-api
+    release: prometheus
+    prometheus: kube-prometheus-stack
 spec:
   selector:
     matchLabels:
@@ -15,7 +15,4 @@ spec:
     - port: http
       path: /metrics
       interval: 5s
-      scrapeTimeout: 10s
-  namespaceSelector:
-    matchNames:
-      - default
+      scrapeTimeout: 3s

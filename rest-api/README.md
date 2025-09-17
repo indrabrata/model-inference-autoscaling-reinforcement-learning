@@ -38,7 +38,9 @@ helm install ingress-nginx ingress-nginx/ingress-nginx \
   --set controller.metrics.serviceMonitor.additionalLabels.release="prometheus" \
   --set controller.metrics.serviceMonitor.namespace="ingress-nginx" \
   --set controller.metrics.serviceMonitor.additionalLabels.prometheus="kube-prometheus-stack" \
-  --set controller.metrics.serviceMonitor.additionalLabels.app="kube-prometheus-stack"
+  --set controller.metrics.serviceMonitor.additionalLabels.app="kube-prometheus-stack" \
+  --set controller.metrics.serviceMonitor.interval=5s \
+  --set controller.metrics.serviceMonitor.scrapeTimeout=3s \
 ```
 
 ### Kubectl Command
