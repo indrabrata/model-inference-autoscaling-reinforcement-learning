@@ -16,16 +16,13 @@ idx2label = weights.meta["categories"]
 def classify_image(file_bytes: bytes, topk: int = 5) -> Dict[str, Any]:
     t0 = time.perf_counter()
     
-    # Preprocess
     img = Image.open(io.BytesIO(file_bytes)).convert("RGB")
     x = transform(img).unsqueeze(0)
 
-    # Forward pass
     with torch.no_grad():
         logits = model(x)
         probs = torch.nn.functional.softmax(logits[0], dim=0)
 
-    # Get top-k predictions
     values, indices = torch.topk(probs, topk)
     preds = [{"label": idx2label[idx], "prob": float(val)} for val, idx in zip(values, indices)]
 

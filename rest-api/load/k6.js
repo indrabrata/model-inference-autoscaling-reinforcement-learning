@@ -65,7 +65,7 @@ export let options = {
   },
 };
 
-const BASE_URL = __ENV.BASE_URL || "http://localhost:8000";
+const BASE_URL = __ENV.BASE_URL || "http://100.127.139.26:30080";
 
 // ---------- PREDICT (file upload) ----------
 const imageBin = open("./shoes.jpg", "b");
@@ -105,7 +105,7 @@ function analyzeRequest() {
 
 // ---------- ORDERS (DB-bound) ----------
 export function ordersRequest() {
-  let res = http.get(`${BASE_URL}/orders?limit=20&offset=0`);
+  let res = http.get(`${BASE_URL}/orders`);
   check(res, { "status is 200": (r) => r.status === 200 });
   sleep(Math.random());
 }

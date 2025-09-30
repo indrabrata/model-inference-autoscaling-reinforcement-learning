@@ -20,7 +20,6 @@ app.add_route("/metrics", metrics_endpoint, methods=["GET"])
 async def health():
     return {"status":"ok"}
 
-# ---------- CPU-BOUND ----------
 @app.post("/predict", response_model=PredictResponse)
 async def predict(
     file: UploadFile = File(..., description="Upload product image"),
@@ -38,7 +37,6 @@ async def predict(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-# ---------- MEMORY-BOUND ----------
 @app.post("/analyze", response_model=AnalyzeResponse)
 async def analyze(
     payload: AnalyzeRequest = Body(..., description="Large JSON transactions"),
@@ -50,7 +48,6 @@ async def analyze(
     )
     return AnalyzeResponse(**res)
 
-# ---------- I/O-BOUND ----------
 @app.get("/orders", response_model=OrdersResponse)
 async def orders(
     limit: int = Query(50, ge=1, le=200),
