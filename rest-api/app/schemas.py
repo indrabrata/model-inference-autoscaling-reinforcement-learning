@@ -6,7 +6,6 @@ class PredictionItem(BaseModel):
     prob: float
 
 class PredictResponse(BaseModel):
-    mode: str = "resnet18" 
     result: List[PredictionItem]
     elapsed_ms: float
 

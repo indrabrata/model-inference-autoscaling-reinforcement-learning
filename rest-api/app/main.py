@@ -29,7 +29,6 @@ async def predict(
         content = await file.read()
         result = cpu_work.classify_image(content, topk=topk)
         return PredictResponse(
-            mode="resnet18",
             result=result["predictions"],
             elapsed_ms=result["elapsed_ms"]
         )

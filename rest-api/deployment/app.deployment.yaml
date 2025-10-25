@@ -15,7 +15,7 @@ spec:
       containers:
         - name: ecom-api
           image: ndraaa/ecom-thesis:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - containerPort: 8000
           env:
@@ -40,10 +40,10 @@ spec:
                   key: POSTGRES_DB
           resources:
             requests:
-              cpu: "1500m"
+              cpu: "500m"
               memory: "512Mi"
             limits:
-              cpu: "2000m"
+              cpu: "1000m"
               memory: "1Gi"
 
 ---

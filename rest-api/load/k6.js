@@ -108,7 +108,7 @@ export function ordersRequest() {
   let res = http.get(`${BASE_URL}/orders`);
   check(res, { "status is 200": (r) => r.status === 200 });
   sleep(Math.random());
-}
+} 
 
 // ---------- HIT TWO ENDPOINTS ----------
 export function hitTwoEndpoints() {
@@ -121,7 +121,7 @@ export function hitTwoEndpoints() {
       payload,
       { headers: { "Content-Type": "application/json" } },
     ],
-    ["GET", `${BASE_URL}/orders?limit=500&offset=0`],
+    ["GET", `${BASE_URL}/orders`],
   ]);
 
   check(responses[0], { "analyze ok": (r) => r.status === 200 });

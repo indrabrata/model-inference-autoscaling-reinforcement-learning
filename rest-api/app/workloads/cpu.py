@@ -1,17 +1,18 @@
 import io
 import time
-from typing import Any, Dict, List
+from typing import Any, Dict
+from PIL import Image
 
 import torch
 import torchvision.transforms as T
-from PIL import Image
-from torchvision.models import ResNet18_Weights, resnet18
+from torchvision.models import squeezenet1_1, SqueezeNet1_1_Weights
 
-weights = ResNet18_Weights.DEFAULT
-model = resnet18(weights=weights)
+weights = SqueezeNet1_1_Weights.DEFAULT
+model = squeezenet1_1(weights=weights)
 model.eval()
 transform = weights.transforms()
 idx2label = weights.meta["categories"]
+
 
 def classify_image(file_bytes: bytes, topk: int = 5) -> Dict[str, Any]:
     t0 = time.perf_counter()
