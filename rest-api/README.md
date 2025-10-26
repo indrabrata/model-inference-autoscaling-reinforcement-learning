@@ -43,6 +43,11 @@ helm install ingress-nginx ingress-nginx/ingress-nginx \
   --set controller.metrics.serviceMonitor.scrapeTimeout=3s \
 ```
 
+```bash
+helm install metrics-server metrics-server/metrics-server \
+  --set args={--kubelet-insecure-tls}
+```
+
 ### Kubectl Command
 
 ```bash
