@@ -14,9 +14,9 @@ end_date = datetime.datetime(2023, 12, 31)
 for i in range(100):
     transaction = {
         "id": i,
-        "amount": round(random.uniform(5, 5000), 2),  # Random amount between 5 and 5000
+        "amount": round(random.uniform(5, 5000), 2),
         "category": random.choice(categories),
-        "user_id": random.randint(1, 10),  # Random user_id between 1 and 10
+        "user_id": random.randint(1, 10),
         "ts": random_timestamp(start_date, end_date)
     }
     transactions.append(transaction)
