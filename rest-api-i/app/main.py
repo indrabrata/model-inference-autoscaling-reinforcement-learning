@@ -23,7 +23,7 @@ async def health():
 @app.post("/predict", response_model=PredictResponse)
 async def predict(
     file: UploadFile = File(..., description="Upload product image"),
-    topk: int = Query(5, ge=1, le=20, description="Number of top predictions to return")
+    topk: int = Query(..., description="Number of top predictions to return")
 ):
     try:
         content = await file.read()
@@ -49,8 +49,8 @@ async def analyze(
 
 @app.get("/orders", response_model=OrdersResponse)
 async def orders(
-    limit: int = Query(50, ge=1, le=200),
-    offset: int = Query(0, ge=0),
+    limit: int = Query(...),
+    offset: int = Query(...),
     session: AsyncSession = Depends(get_session),
 ):
     res = await io_work.get_orders(session, limit, offset)

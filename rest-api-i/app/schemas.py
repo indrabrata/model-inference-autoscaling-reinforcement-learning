@@ -18,7 +18,7 @@ class TransactionItem(BaseModel):
 
 class AnalyzeRequest(BaseModel):
     transactions: List[TransactionItem]
-    expand_factor: int = Field(default=1, ge=1, le=50)
+    expand_factor: int
     heavy_agg: bool = False
 
 class AnalyzeResponse(BaseModel):
